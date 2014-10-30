@@ -1,0 +1,83 @@
+// Fluid Media
+// ===========
+
+$fluid-media: (
+  ratio: 16/9,
+  width: 100%,
+  children: '*',
+);
+
+
+// Fluid Media
+// -----------
+@mixin fluid-media(
+  $args: $fluid-media
+) {
+  @include render(_get-fluid-media($args));
+}
+
+
+// PRIVATE: Get Fluid Media
+// ------------------------
+@function _get-fluid-media(
+  $args: $fluid-media
+) {
+  $_settings: _parse-fluid-media($args);
+  $_ratio: map-get($_settings, ratio);
+  $_width: map-get($_settings, width);
+  $_children: map-get($_settings, children);
+
+  $_return: (
+    height: 0,
+    padding-top: (1 / $_ratio) * $_width,
+    position: relative,
+    width: $_width,
+  );
+
+  $_inner: (
+    display: block,
+    position: absolute,
+    height: 100%,
+    width: 100%,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  );
+
+  @if $_children {
+    $_children: ('> #{$_children}': $_inner);
+    $_return: map-merge($_return, $_children);
+  }
+
+  @return $_return;
+}
+
+
+// PRIVATE: Parse Fluid Media
+// --------------------------
+@function _parse-fluid-media(
+  $args: $fluid-media
+) {
+  $_return: $fluid-media;
+
+  @if type-of($args) == map {
+    $_return: map-merge($fluid-media, $args);
+  } @else {
+    @each $arg in $args {
+      @if type-of($arg) == map {
+        $_return: map-merge($_return, $arg);
+      } @else if type-of($arg) == string {
+        $_return: map-merge($_return, (children: $arg));
+      } @else if type-of($arg) == number {
+        @if unitless($arg) {
+          $_return: map-merge($_return, (ratio: $arg));
+        } @else {
+          $_return: map-merge($_return, (width: $arg));
+        }
+      }
+    }
+  }
+
+  @return $_return;
+}

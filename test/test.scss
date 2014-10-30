@@ -1,0 +1,67 @@
+// Arrow Tests
+// ===========
+
+@import "true";
+
+// Test Module
+// -----------
+
+@include test-module(fluid media) {
+
+  // parse fluid media
+  // -----------------
+  @include test(_parse-fluid-media) {
+    $test: _parse-fluid-media();
+    $expect: $fluid-media;
+    @include assert-equal($test, $expect,
+      'Returns a fluid-media settings without changes.');
+
+    $test: _parse-fluid-media(.25 80px video);
+    $expect: (
+      ratio: .25,
+      width: 80px,
+      children: video,
+    );
+    @include assert-equal($test, $expect,
+      'Returns settings map based on args.');
+
+    $test: _parse-fluid-media(.25 (children: video));
+    $expect: (
+      ratio: .25,
+      width: 100%,
+      children: video,
+    );
+    @include assert-equal($test, $expect,
+      'Allows mix of defaults, args, and maps.');
+  }
+
+  // get fluid media
+  // ---------------
+  @include test(_get-fluid-media) {
+    $test: _get-fluid-media();
+    $expect: (
+      height: 0,
+      padding-top: (1 / (16/9))*100%,
+      position: relative,
+      width: 100%,
+      '> *': (
+        display: block,
+        position: absolute,
+        height: 100%,
+        width: 100%,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+      )
+    );
+    @include assert-equal($test, $expect,
+      'Returns an output map based on input settings');
+  }
+}
+
+// Report
+// ------
+
+@include report;
+
