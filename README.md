@@ -1,8 +1,8 @@
 accoutrement-fluid-media
 ========================
 
-Sass helpers for fluid media elements 
+This accoutrement module has been merged into
+[accoutrement-layout][layout]
+and will be removed.
 
-## Installation
-
-``bower install accoutrement-fluid-media``
+[layout]: https://github.com/oddbird/accoutrement-layout
